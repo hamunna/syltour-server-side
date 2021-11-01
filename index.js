@@ -2,6 +2,8 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config();
+const ObjectId = require('mongodb').ObjectId;
+
 const app = express();
 const port = 5000;
 
@@ -19,24 +21,33 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 async function run() {
-  try {
-    await client.connect();
+	try {
+		await client.connect();
+		const database = client.db("sylTour");
+		const toursCollection = database.collection("tours");
 
-    const database = client.db("sylTour");
-    const toursCollection = database.collection("tours");
+		// GET API
+		app.get('/tours', async (req, res) => {
 
-    const cursor = toursCollection.find(query, options);
+			const cursor = toursCollection.find({});
+			const tours = await cursor.toArray();
+			console.log(tours);
+			res.send(tours);
+		});
 
-    // print a message if no documents were found
-    if ((await cursor.count()) === 0) {
-      console.log("No documents found!");
-    }
+		// GET Single Tour
+		app.get('/tours/:id', async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const tour = await toursCollection.findOne(query);
 
-    // replace console.dir with your callback to access individual elements
-    await cursor.forEach(console.dir);
-  } finally {
-    // await client.close();
-  }
+			res.send(tour);
+		});
+
+
+	} finally {
+		// await client.close();
+	}
 }
 run().catch(console.dir);
 
