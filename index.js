@@ -35,14 +35,22 @@ async function run() {
 			res.send(tours);
 		});
 
-		// GET Single Tour
-		app.get('/tours/:id', async (req, res) => {
-			const id = req.params.id;
-			const query = { _id: ObjectId(id) };
-			const tour = await toursCollection.findOne(query);
+		// POST API
+		app.post('/tours', async (req, res) => {
+			const newTour = req.body;
+			const result = await toursCollection.insertOne(newTour);
 
-			res.send(tour);
+			res.json(result);
 		});
+
+		// // GET Single Tour
+		// app.get('/tours/:id', async (req, res) => {
+		// 	const id = req.params.id;
+		// 	const query = { _id: ObjectId(id) };
+		// 	const tour = await toursCollection.findOne(query);
+
+		// 	res.send(tour);
+		// });
 
 
 	} finally {
@@ -54,7 +62,7 @@ run().catch(console.dir);
 
 
 
-app.get('/', (res, req) => {
+app.get('/', (req, res) => {
 	console.log('Server Running Successfully!')
 	res.send('Server is Running...')
 });
