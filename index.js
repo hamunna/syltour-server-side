@@ -5,7 +5,7 @@ require('dotenv').config();
 const ObjectId = require('mongodb').ObjectId;
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -64,24 +64,8 @@ async function run() {
 			const query = { _id: ObjectId(id) };
 			const result = await myOrdersCollection.deleteOne(query);
 
-			// console.log('Deleting user with ID: ', result);
 			res.json(result);
 		});
-
-
-
-
-
-
-		// // GET Single Tour
-		// app.get('/tours/:id', async (req, res) => {
-		// 	const id = req.params.id;
-		// 	const query = { _id: ObjectId(id) };
-		// 	const tour = await toursCollection.findOne(query);
-
-		// 	res.send(tour);
-		// });
-
 
 	} finally {
 		// await client.close();
@@ -93,7 +77,6 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-	console.log('Server Running Successfully!')
 	res.send('Server is Running...')
 });
 
