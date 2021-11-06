@@ -25,6 +25,7 @@ async function run() {
 		await client.connect();
 		const database = client.db("sylTour");
 		const toursCollection = database.collection("tours");
+		const myOrdersCollection = database.collection("myOrders");
 
 		// GET API
 		app.get('/tours', async (req, res) => {
@@ -42,6 +43,28 @@ async function run() {
 
 			res.json(result);
 		});
+
+		// POST API Order Confirmation
+		app.post('/myOrders', async (req, res) => {
+			const newOrder = req.body;
+			const result = await myOrdersCollection.insertOne(newOrder);
+
+			res.json(result);
+		});
+
+		// GET API myOrders Collection
+		app.get('/myOrders', async (req, res) => {
+
+			const cursor = myOrdersCollection.find({});
+			const myOrderId = await cursor.toArray();
+			console.log(myOrderId);
+			res.send(myOrderId);
+		});
+
+
+
+
+
 
 		// // GET Single Tour
 		// app.get('/tours/:id', async (req, res) => {
