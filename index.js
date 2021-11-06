@@ -7,9 +7,6 @@ const ObjectId = require('mongodb').ObjectId;
 const app = express();
 const port = 5000;
 
-// user: sylTour
-// password: AbNHMWFCkOhwd0GW
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -59,6 +56,16 @@ async function run() {
 			const myOrderId = await cursor.toArray();
 			console.log(myOrderId);
 			res.send(myOrderId);
+		});
+
+		// DELETE User (API)
+		app.delete('/myOrders/:id', async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const result = await myOrdersCollection.deleteOne(query);
+
+			// console.log('Deleting user with ID: ', result);
+			res.json(result);
 		});
 
 
