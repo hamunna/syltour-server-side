@@ -41,7 +41,7 @@ async function run() {
 			res.json(result);
 		});
 
-		// POST API Order Confirmation
+		// POST API Placing Order
 		app.post('/myOrders', async (req, res) => {
 			const newOrder = req.body;
 			const result = await myOrdersCollection.insertOne(newOrder);
@@ -66,6 +66,26 @@ async function run() {
 
 			res.json(result);
 		});
+
+		// Update Order Pending
+		app.put('/myOrders/:id', async (req, res) => {
+			const id = req.params.id;
+			const updateOrderStatus = req.body;
+			const filter = { _id: ObjectId(id) };
+
+			const options = { upsert: true };
+
+			// create a document
+			const updateDoc = {
+				$set: {
+					status: updateOrderStatus.status
+				},
+			};
+
+			const result = await myOrdersCollection.updateOne(filter, updateDoc, options);
+
+			res.json(result)
+		})
 
 	} finally {
 		// await client.close();
